@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -39,16 +38,17 @@ import warehouse.com.eventstarter.model.Event;
 @ConditionalOnClass(ConsumerFactory.class)
 @AutoConfigureBefore(KafkaAutoConfiguration.class)
 @EnableConfigurationProperties({KafkaProperties.class})
-@PropertySource("classpath:application.yaml")
 public class KafkaConsumerAutoConfiguration implements InitializingBean {
+
+  @Value(value = "${kafka.consumer.fixed-backoff.interval}")
+  private Long interval;
+
+  @Value(value = "${kafka.consumer.fixed-backoff.max-failure}")
+  private Long maxAttempts;
 
   private final KafkaProperties kafkaProperties;
   private final ObjectProvider<DefaultKafkaConsumerFactoryCustomizer> customizers;
   private final AnnotatedEventDefinitionLoader eventDefinitionLoader;
-  @Value(value = "${kafka.consumer.fixed-backoff.interval}")
-  private Long interval;
-  @Value(value = "${kafka.consumer.fixed-backoff.max-failure}")
-  private Long maxAttempts;
 
   @Override
   public void afterPropertiesSet() {

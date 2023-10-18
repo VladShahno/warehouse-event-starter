@@ -23,8 +23,6 @@ public class AuditEvent extends Event {
 
   private String entityType;
   private Set<Entity> entities;
-  private String subscriptionId;
-  private String orgId;
   private String initiatorId;
   private String action;
   private Date timestamp;
